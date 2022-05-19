@@ -1,3 +1,7 @@
+# Project-specific
+package-lock.json
+*.txt
+
 # Logs
 logs
 *.log

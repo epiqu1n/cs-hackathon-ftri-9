@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Janitor",
+  "version": "0.1-beta",
+  "description": "Cleans up old tabs to keep your browser clean!",
+  "content_scripts": [
+    {
+      "matches": ["*"],
+      "js": ["./main.js"],
+      "css": ["index.css"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": "context_menu/icon.png",
+    "default_title": "Tab Janitor settings",
+    "default_popup": "context_menu/popup.html"
+  }
+}

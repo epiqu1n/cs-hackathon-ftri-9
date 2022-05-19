@@ -1,0 +1,22 @@
+{
+  "root": true,
+  "ignorePatterns": ["**/test", "**/__tests__"],
+  "env": {
+    "node": true,
+    "browser": true,
+    "jquery": true,
+    "es2021": true
+  },
+  "globals": { "schedule": "writable", "chrome": "readonly" },
+  "extends": "eslint:recommended",
+  "parserOptions": { "sourceType": "module" },
+  "rules": {
+    "indent": ["warn", 2, {
+      "ignoreComments": true
+    }],
+    "no-unused-vars": ["off", { "vars": "local" }],
+    "prefer-const": "warn",
+    "quotes": ["warn", "single"],
+    "space-infix-ops": "warn"
+  }
+} 

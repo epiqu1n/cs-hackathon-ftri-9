@@ -3,7 +3,7 @@
   "name": "Tab Janitor",
   "version": "0.1",
   "description": "Cleans up old tabs to keep your browser clean!",
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs", "notifications", "activeTab", "scripting"],
   "background": {
     "service_worker": "/src/background.js"
   },

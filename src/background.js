@@ -15,7 +15,18 @@ const tabData = {};
 const MAX_TAB_AGE = 3000; // In milliseconds
 let isOn = false;
 chrome.storage.sync.get('isEnabled', (result) => {
+  console.log('Reading storage:', result);
   isOn = result.isEnabled;
+});
+
+chrome.tabs.query({}, (tabs) => {
+  for (const tab of tabs) {
+    tabData[tab.id] = {
+      lastActive: new Date(),
+      tabId: tab.id,
+      url: tab.url
+    }
+  }
 });
 
 /** Message listener for messages from popup.js */
@@ -33,6 +44,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
     case 'toggle-on-off':
       isOn = msg.isOn;
+      chrome.storage.sync.set({ isEnabled: msg.isOn });
       break;
   }
 });
@@ -92,6 +104,17 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   console.log('Tab updated:', tabData[tabId]);
 });
 
+/** Updates tabData when a tab is removed */
+chrome.tabs.onRemoved.addListener((tabId) => {
+  if (tabData[tabId]) {
+    delete tabData[tabId];
+    console.log('Tab removed:', tabData[tabId]);
+  }
+  else console.log('Untracked tab removed:', tabId);
+
+  if (tabId === activeTabId) activeTabId = null;
+});
+
 /**
  * Checks tracked tabs and closes any that are over `MAX_TAB_AGE` old.  
  * Currently only works for YouTube tabs for debugging purposes
@@ -102,7 +125,7 @@ function checkTabs() {
   for (const __tabIdStr in tabData) {
     const tabId = parseInt(__tabIdStr);
     const tab = tabData[tabId];
-    if (tabId !== activeTabId && Date.now() - tab.lastActive > MAX_TAB_AGE && tab.url?.match(/youtube/)) {
+    if (tabId !== activeTabId && Date.now() - tab.lastActive > MAX_TAB_AGE && tab.url?.match(/(youtube)|(stackoverflow)|(reddit)/)) {
       if (isOn) cleanupTab(tab);
 
       // TODO: Push closed tab update to popup if popup is open

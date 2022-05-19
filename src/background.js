@@ -86,7 +86,7 @@ function checkTabs() {
   for (const tabId in tabData) {
     const tab = tabData[tabId];
     if (parseInt(tabId) !== activeTabId && Date.now() - tab.lastActive > MAX_TAB_AGE && tab.url?.match(/youtube/)) {
-      closeTab(tabId);
+      closeTab(tab);
 
       // TODO: Push closed tab update to popup if popup is open
     }

@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" type="text/css" href="./popup.css" />
     <script defer src="popup.js"></script>
   </head>
   <body>
-    <label class="switch">
+    <h1>ABRA CATABRA</h1>
+    <div class="toggle-btn">
+      <label class="switch">
         <input id="enabledButton" checked class="toggle" type="checkbox" />
         <span class="slider round"></span>
       </label>
+      <button id="cleanButton">Save & Close Tab</button>
+    </div>
     <div id="closedTabs"><b>No tabs closed yet!</b></div>
-    <!-- Toggle on/off -->
-
-    <!-- Button to close and save current tab -->
-    <button id="cleanButton">Save & Close Tab</button>
   </body>
 </html>

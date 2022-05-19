@@ -45,11 +45,11 @@ body {
 }
 
 input:checked + .slider {
-  background-color: #2196f3;
+  background-color: lightgreen;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196f3;
+  box-shadow: 0 0 1px lightgreen;
 }
 
 input:checked + .slider:before {
@@ -63,6 +63,77 @@ input:checked + .slider:before {
   border-radius: 34px;
 }
 
+h1 {
+  text-align: center;
+}
+
 .slider.round:before {
   border-radius: 50%;
+}
+
+body {
+  width: 300px;
+  height: 500px;
+  font-family: "Lilita One", cursive;
+  background-color: #082b36;
+  color: white;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+.closed-tabs {
+  /* width: 250px; */
+  text-align: left;
+  margin: 20px 10px;
+  font-size: 16px;
+}
+
+.toggle-btn {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 30px;
+  margin-bottom: 15px;
+  border-bottom: limegreen 0.5px solid;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: "Lilita One", cursive;
+  border-radius: 0.25rem;
+  background-color: black;
+  color: white;
+  border: lightgreen solid 1px;
+  font-size: 14px;
+  font-weight: 800;
+  font-stretch: extra-expanded;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+#closedTabs {
+  display: flex;
+  flex-flow: column;
+  padding: 0 0.5rem;
+}
+
+button:hover {
+  background-color: white;
+  color: #082b36;
+}
+
+a, a:visited {
+  color: #e7e6e6;
+  font-size: 1.2em;
+  margin-bottom: 0.4em;
+  word-break: break-all;
 }

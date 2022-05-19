@@ -11,7 +11,8 @@
   "parserOptions": { "sourceType": "module" },
   "rules": {
     "indent": ["warn", 2, {
-      "ignoreComments": true
+      "ignoreComments": true,
+      "SwitchCase": 1
     }],
     "no-unused-vars": ["off", { "vars": "local" }],
     "prefer-const": "warn",

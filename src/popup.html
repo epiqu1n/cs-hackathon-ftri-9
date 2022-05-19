@@ -5,10 +5,14 @@
     <script defer src="popup.js"></script>
   </head>
   <body>
-    <div id="closedTabs">No tabs closed yet!</div>
+    <label class="switch">
+        <input id="enabledButton" checked class="toggle" type="checkbox" />
+        <span class="slider round"></span>
+      </label>
+    <div id="closedTabs"><b>No tabs closed yet!</b></div>
     <!-- Toggle on/off -->
 
     <!-- Button to close and save current tab -->
-    <button onclick="closeTab()">Save & Close Tab</button>
+    <button id="cleanButton">Save & Close Tab</button>
   </body>
 </html>

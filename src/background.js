@@ -9,25 +9,35 @@
  * @type {{[tabId: number]: TabData}}
  */
 const tabData = {};
-const closedTabURLs = [];
-const two = 2;
+/** @type {string[]} */ const closedTabURLs = [];
+/** @type {number}   */ let activeTabId;
 
+const MAX_TAB_AGE = 3000; // In milliseconds
+let isOn = false;
+chrome.storage.sync.get('isEnabled', (result) => {
+  isOn = result.isEnabled;
+});
 
-
+/** Message listener for messages from popup.js */
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   console.log(msg);
   switch (msg.type) {
-  case 'get-closed-tabs': {
-    sendResponse(closedTabURLs);
-    break;
-  }
+    case 'get-closed-tabs': {
+      // Request for all closed tabs
+      sendResponse(closedTabURLs);
+      break;
+    }
+    case 'cleanup-tab': {
+      cleanupTab();
+      break;
+    }
+    case 'toggle-on-off':
+      isOn = msg.isOn;
+      break;
   }
 });
 
-const currentURLs = new Set();
-
-let activeTabId;
-
+/** Updates tabData when a new tab is created */ 
 chrome.tabs.onCreated.addListener((tab) => {
   // When a new tab is created, store tab id with timestamp and URL
   // If a previous tab was open, set last active time of that tab
@@ -38,10 +48,9 @@ chrome.tabs.onCreated.addListener((tab) => {
     tabId: tab.id
   };
   console.log('Tab created:', tabData[tab.id]);
-  // Set current tab as currently active tab
-  activeTabId = tab.id;
 
-/*   // Check if there is already a current tab which matches the URL of the current tab
+/* 
+  // Check if there is already a current tab which matches the URL of the current tab
   chrome.tabs.get(tabInfo.id, (newTab) => {
     if (currentURLs.has(newTab.url)) {
       chrome.notifications.create(null, {
@@ -50,15 +59,18 @@ chrome.tabs.onCreated.addListener((tab) => {
       console.log('You already have this tab open!');
     }
     else currentURLs.add(newTab.url);
-  }); */
+  }); 
+*/
 });
 
+/** Updates tabData when a tab is activated */
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  // If a previous tab was open, set last active time of that tab
   if (activeTabId) {
+    // If there was a previously active tab, set last active time of that tab
     tabData[activeTabId].lastActive = new Date();
   }
   if (!tabData[tabId]) {
+    // If activated tab has not been tracked yet, add to tabData
     const tab = await chrome.tabs.get(tabId);
     tabData[tabId] = {
       lastActive: new Date(),
@@ -68,37 +80,45 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
     console.log('Untracked tab activated:', tabData[tabId]);
   }
   else console.log('Tab activated:', tabData[tabId]);
+
+  // Set activated tab as currently active tab
   activeTabId = tabId;
 });
 
+/** Updates tabData when a tab is updated */
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   // Update URL of updated tab
   tabData[tabId].url = tab.url;
   console.log('Tab updated:', tabData[tabId]);
 });
 
-setInterval(checkTabs, 1000);
-const MAX_TAB_AGE = 3000;
-
+/**
+ * Checks tracked tabs and closes any that are over `MAX_TAB_AGE` old.  
+ * Currently only works for YouTube tabs for debugging purposes
+ */
 function checkTabs() {
   // Iterate over all tabs
-  // If tab age is over 10 seconds and URL is YouTube, close and push to closed tabs
-  for (const tabId in tabData) {
+    // If tab age is over `MAX_TAB_AGE` and URL is YouTube, close and push to closed tabs
+  for (const __tabIdStr in tabData) {
+    const tabId = parseInt(__tabIdStr);
     const tab = tabData[tabId];
-    if (parseInt(tabId) !== activeTabId && Date.now() - tab.lastActive > MAX_TAB_AGE && tab.url?.match(/youtube/)) {
-      closeTab(tab);
+    if (tabId !== activeTabId && Date.now() - tab.lastActive > MAX_TAB_AGE && tab.url?.match(/youtube/)) {
+      if (isOn) cleanupTab(tab);
 
       // TODO: Push closed tab update to popup if popup is open
     }
   }
 }
+// Check tabs once every second
+setInterval(checkTabs, 1000);
 
 /**
- * Closes a tab. Defaults to active tab if no tab is provided
+ * Closes a tab and stores the URL. Defaults to active tab if no tab is provided
  * @param {TabData} tab 
  */
-function closeTab(tab = null) {
+function cleanupTab(tab = null) {
   if (!tab) tab = tabData[activeTabId];
+  // TODO: If extension is toggled off, do not close
 
   console.log('Closing tab:', tab);
   closedTabURLs.push(tab.url);

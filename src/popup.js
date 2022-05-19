@@ -6,6 +6,7 @@ window.onload = () => {
   // Send request to background.js to get closed tabs and update popup
   chrome.runtime.sendMessage({ type: 'get-closed-tabs' }, updateClosedTabs);
 
+  // Initialize enabled toggle from local storage and sync with background script
   const isEnabled = (localStorage.getItem('isEnabled') === 'false' ? false : true);
   document.querySelector('#enabledButton').checked = isEnabled;
   chrome.runtime.sendMessage({
@@ -20,7 +21,7 @@ window.onload = () => {
  */
 function updateClosedTabs(closedTabs) {
   if (closedTabs?.length === 0) return;
-  closedTabsEl.innerHTML = closedTabs.map((url) => `<a href="${url}" target="blank">${url}</a>`).join('<br/>');
+  closedTabsEl.innerHTML = closedTabs.reverse().map((url) => `<a href="${url}" target="blank">${url}</a>`).join('');
 }
 
 /**
@@ -32,6 +33,10 @@ function cleanupTab() {
 }
 document.querySelector('#cleanButton').addEventListener('click', cleanupTab);
 
+/**
+ * Toggles the enabled state of the extension and syncs with background script
+ * @param {Event} e 
+ */
 function toggle(e) {
   chrome.runtime.sendMessage({
     type: 'toggle-on-off',

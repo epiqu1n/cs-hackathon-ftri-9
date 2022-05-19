@@ -13,12 +13,15 @@ const tabData = {};
 /** @type {number}   */ let activeTabId;
 
 const MAX_TAB_AGE = 3000; // In milliseconds
+
+// Initialze enabled state from chrome storage
 let isOn = false;
 chrome.storage.sync.get('isEnabled', (result) => {
   console.log('Reading storage:', result);
   isOn = result.isEnabled;
 });
 
+/** Check and store info about all existing tabs on extension load */
 chrome.tabs.query({}, (tabs) => {
   for (const tab of tabs) {
     tabData[tab.id] = {
@@ -42,10 +45,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       cleanupTab();
       break;
     }
-    case 'toggle-on-off':
+    case 'toggle-on-off': {
       isOn = msg.isOn;
       chrome.storage.sync.set({ isEnabled: msg.isOn });
       break;
+    }
   }
 });
 

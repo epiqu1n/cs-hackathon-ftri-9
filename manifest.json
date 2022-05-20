@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Tab Janitor",
+  "name": "AbracaTabra",
   "version": "0.1",
   "description": "Cleans up old tabs to keep your browser clean!",
   "permissions": ["storage", "tabs", "notifications", "activeTab", "scripting"],
@@ -14,7 +14,7 @@
       "64": "/src/img/icon_64.png",
       "128": "/src/img/icon_128.png"
     },
-    "default_title": "Tab Janitor settings",
+    "default_title": "AbracaTabra settings",
     "default_popup": "/src/popup.html"
   },
   "icons": {

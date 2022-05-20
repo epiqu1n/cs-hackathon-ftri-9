@@ -137,3 +137,7 @@ a, a:visited {
   margin-bottom: 0.4em;
   word-break: break-all;
 }
+
+.green {
+  color: limegreen;
+}
